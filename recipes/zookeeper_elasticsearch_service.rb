@@ -46,7 +46,6 @@ node = '#{datacenter}-elasticsearch-#{location}-#{node.chef_environment}'
 path = '/%s/' % (node)
 
 if zk.exists(path):
-    os.system('touch /tmp/dumpbdzfdf')
     addresses = zk.children(path)
     elasticsearch_ip_list = list(set(addresses))
     unicast_hosts = elasticsearch_ip_list
@@ -57,24 +56,26 @@ if zk.exists(path):
     f.write(unicast_hosts)
     f.close()
     for ip_address in elasticsearch_ip_list:
-        keypair_path = '/root/.ssh/#{keypair}'
-        key = paramiko.RSAKey.from_private_key_file(keypair_path)
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(ip_address, 22, username=username, pkey=key)
-        cmd = "sudo ufw allow from #{node[:ipaddress]}"
-        stdin, stdout, stderr = ssh.exec_command(cmd)
-        out = stdout.read()
-        err = stderr.read()
-        
-        cmd = """echo '%s' | tee -a '#{Chef::Config[:file_cache_path]}/unicast_hosts'""" % unicast_hosts
-        stdin, stdout, stderr = ssh.exec_command(cmd)
-        out = stdout.read()
-        err = stderr.read()
-        print "out--", out
-        ssh.close()
-        os.system("sudo ufw allow from %s" % ip_address)
-        os.system("sudo ufw allow from %s" % ip_address)
+        if ip_address!="#{node[:ipaddress]}":
+            keypair_path = '/root/.ssh/#{keypair}'
+            key = paramiko.RSAKey.from_private_key_file(keypair_path)
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ip_address, 22, username=username, pkey=key)
+            cmd = "sudo ufw allow from #{node[:ipaddress]}"
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            out = stdout.read()
+            err = stderr.read()
+            cmd = "rm #{Chef::Config[:file_cache_path]}/unicast_hosts"
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            cmd = """echo '%s' | tee -a '#{Chef::Config[:file_cache_path]}/unicast_hosts'""" % unicast_hosts
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            out = stdout.read()
+            err = stderr.read()
+            print "out--", out
+            ssh.close()
+            os.system("sudo ufw allow from %s" % ip_address)
+            os.system("sudo ufw allow from %s" % ip_address)  
         
 PYCODE
 end

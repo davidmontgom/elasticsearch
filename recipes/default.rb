@@ -18,7 +18,7 @@ if location!='local'
   end
 end
 
-clustername = 'feed#{node.chef_environment}cluster'
+clustername = "#{datacenter}elasticsearch#{location}#{node.chef_environment}"
 version = node[:elasticsearch][:version]
   
 remote_file "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
