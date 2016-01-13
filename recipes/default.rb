@@ -6,9 +6,9 @@ slug = node.name.split('-')[4]
 cluster_slug = File.read("/var/cluster_slug.txt")
 cluster_slug = cluster_slug.gsub(/\n/, "") 
 
-if location=='local'
- data_directory = "/data"
-end
+
+data_directory = "/data"
+
 
 if location!='local'
   bash "swap" do
