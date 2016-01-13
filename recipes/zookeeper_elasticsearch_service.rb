@@ -96,8 +96,7 @@ if zk.exists(path):
             err = stderr.read()
             print "out--", out
             ssh.close()
-            os.system("sudo ufw allow from %s" % ip_address)
-            os.system("sudo ufw allow from %s" % ip_address)  
+            os.system("sudo ufw allow from %s" % ip_address) 
         
 PYCODE
 end
