@@ -1,2 +1,2 @@
 default['elasticsearch']['data_directory'] = "/data"
-default[:elasticsearch][:version] = "1.7.1"
+default[:elasticsearch][:version] = "2.0.0"

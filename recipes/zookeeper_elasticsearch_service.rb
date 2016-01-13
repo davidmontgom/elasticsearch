@@ -1,13 +1,17 @@
 datacenter = node.name.split('-')[0]
-server_type = node.name.split('-')[1]
+environment = node.name.split('-')[1]
 location = node.name.split('-')[2]
-client_id = node.name.split('-')[4]
-cluster_id = node.name.split('-')[5]
+server_type = node.name.split('-')[3]
+slug = node.name.split('-')[4] 
+cluster_slug = File.read("/var/cluster_slug.txt")
+cluster_slug = cluster_slug.gsub(/\n/, "") 
 
   
 data_bag("my_data_bag")
 zk = data_bag_item("my_data_bag", "zk")
 zk_hosts = zk[node.chef_environment][datacenter][location]["zookeeper_hosts"]
+
+
 
 db = data_bag_item("my_data_bag", "my")
 keypair=db[node.chef_environment][location]["ssh"]["keypair"]
