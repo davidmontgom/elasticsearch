@@ -49,7 +49,7 @@ end
 
 
 
-if cluster_slug=="nocluster"
+if cluster_slug!="nocluster"
   clustername = "#{datacenter}elasticsearch#{location}#{node.chef_environment}#{slug}#{cluster_slug}"
 else
   clustername = "#{datacenter}elasticsearch#{location}#{node.chef_environment}#{slug}"
