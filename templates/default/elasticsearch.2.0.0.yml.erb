@@ -98,8 +98,3 @@ discovery.zen.ping.unicast.hosts: <%=@unicast_hosts%>
 # action.destructive_requires_name: true
 
 
-<% @es.each_pair do |key, value| %>
-	<% if key!="id" and key!="version" %>
-<%= "#{key}: #{value}" %>
-	<% end %>
-<% end %>
