@@ -62,9 +62,9 @@ zk_host_str = ','.join(zookeeper_hosts)
 zk = zc.zk.ZooKeeper(zk_host_str) 
    
 if "#{cluster_slug}"=="nocluster":
-    node = '#{datacenter}-#{node.chef_environment}-#{location}-#{server_type}-#{slug}-#{shard}'
+    node = '#{datacenter}-#{node.chef_environment}-#{location}-#{server_type}-#{slug}'
 else:
-    node = '#{datacenter}-#{node.chef_environment}-#{location}-#{server_type}-#{slug}-#{cluster_slug}-#{shard}'
+    node = '#{datacenter}-#{node.chef_environment}-#{location}-#{server_type}-#{slug}-#{cluster_slug}'
 path = '/%s/' % (node)
 
 if zk.exists(path):
