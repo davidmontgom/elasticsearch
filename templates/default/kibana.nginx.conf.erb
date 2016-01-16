@@ -1,0 +1,10 @@
+server {
+                listen 83;
+                server_name 127.0.0.1;
+
+location / {
+	  proxy_pass http://<%=@elasticsearch_host%>:5601;
+	  #auth_basic "Restricted";
+	  #auth_basic_user_file /etc/nginx/.htpasswd;
+  }
+}

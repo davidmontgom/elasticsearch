@@ -14,7 +14,7 @@ bash "elasticsearch-head" do
 end
 =end
 
-#http://1-elasticsearch-do-development-ny-forex.forexhui.com:5601/app/kibana
+#http://1-elasticsearch-forex-do-development-ny.forexhui.com:5601/app/kibana
 #http://1-elasticsearch-do-development-ny-forex.forexhui.com:5601/app/marvel
 
 
