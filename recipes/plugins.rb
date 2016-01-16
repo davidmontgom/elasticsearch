@@ -14,7 +14,7 @@ bash "elasticsearch-head" do
 end
 =end
 
-
+#http://1-elasticsearch-do-development-ny-forex.forexhui.com:9200/_plugin/marvel/
 
 bash "elasticsearch-head" do
   user "root"

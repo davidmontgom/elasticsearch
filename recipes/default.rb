@@ -1,8 +1,8 @@
-datacenter = node.name.split('-')[0]
-environment = node.name.split('-')[1]
-location = node.name.split('-')[2]
-server_type = node.name.split('-')[3]
-slug = node.name.split('-')[4] 
+server_type = node.name.split('-')[0]
+slug = node.name.split('-')[1] 
+datacenter = node.name.split('-')[2]
+environment = node.name.split('-')[3]
+location = node.name.split('-')[4]
 cluster_slug = File.read("/var/cluster_slug.txt")
 cluster_slug = cluster_slug.gsub(/\n/, "") 
 
@@ -50,9 +50,9 @@ end
 
 
 if cluster_slug!="nocluster"
-  clustername = "#{datacenter}elasticsearch#{location}#{node.chef_environment}#{slug}#{cluster_slug}"
+  clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}#{cluster_slug}"
 else
-  clustername = "#{datacenter}elasticsearch#{location}#{node.chef_environment}#{slug}"
+  clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}"
 end
 
 
