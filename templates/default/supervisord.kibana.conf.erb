@@ -1,0 +1,26 @@
+[program:kibana]
+command = /var/kibana-<%=@kibana_version%>-linux-x64/bin/kibana
+
+process_name=%(program_name)s
+autostart=true
+autorestart=true
+stopsignal=KILL
+stopasgroup = true
+killasgroup = true
+
+
+stdout_logfile=/tmp/kibana.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=1
+
+stderr_logfile = /tmp/kibana.err
+stderr_logfile_maxbytes=1MB
+stderr_logfile_backups=1
+
+
+[group:kibana_server]
+programs=kibana
+
+
+
+
