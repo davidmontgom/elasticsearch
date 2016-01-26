@@ -24,7 +24,7 @@ else
 end
 
 
-if cluster_slug=="nocluster"
+if cluster_slug_zookeeper=="nocluster"
   subdomain = "zookeeper-#{slug}-#{datacenter}-#{environment}-#{location}"
 else
   subdomain = "zookeeper-#{slug}-#{datacenter}-#{environment}-#{location}-#{cluster_slug_zookeeper}"
