@@ -17,12 +17,19 @@ AWS_SECRET_ACCESS_KEY = aws[node.chef_environment]['AWS_SECRET_ACCESS_KEY']
 data_bag("server_data_bag")
 zookeeper_server = data_bag_item("server_data_bag", "zookeeper")
 
+if zookeeper_server[datacenter][environment][location].has_key?(cluster_slug)
+  cluster_slug_zookeeper = cluster_slug
+else
+  cluster_slug_zookeeper = "nocluster"
+end
+
+
 if cluster_slug=="nocluster"
   subdomain = "zookeeper-#{slug}-#{datacenter}-#{environment}-#{location}"
 else
-  subdomain = "zookeeper-#{slug}-#{datacenter}-#{environment}-#{location}-#{cluster_slug}"
+  subdomain = "zookeeper-#{slug}-#{datacenter}-#{environment}-#{location}-#{cluster_slug_zookeeper}"
 end
-required_count = zookeeper_server[datacenter][environment][location][cluster_slug]['required_count']
+required_count = zookeeper_server[datacenter][environment][location][cluster_slug_zookeeper]['required_count']
 full_domain = "#{subdomain}.#{domain}"
 
 
@@ -55,10 +62,18 @@ import json
 logging.basicConfig()
 import paramiko
 username='#{username}'
+import dns.resolver
 zookeeper_hosts = []
 for i in xrange(int(#{required_count})):
-    zookeeper_hosts.append("%s-#{full_domain}:2181" % (i+1))
-zk_host_str = ','.join(zookeeper_hosts)   
+    zookeeper_hosts.append("%s-#{full_domain}" % (i+1))
+zk_host_list = []
+for aname in zookeeper_hosts:
+  try:
+      data =  dns.resolver.query(aname, 'A')
+      zk_host_list.append(data[0].to_text()+':2181')
+  except:
+      print 'ERROR, dns.resolver.NXDOMAIN',aname
+zk_host_str = ','.join(zk_host_list)    
 zk = zc.zk.ZooKeeper(zk_host_str) 
    
 if "#{cluster_slug}"=="nocluster":
