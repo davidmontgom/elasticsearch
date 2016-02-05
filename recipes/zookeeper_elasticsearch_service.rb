@@ -63,6 +63,7 @@ logging.basicConfig()
 import paramiko
 username='#{username}'
 import dns.resolver
+import subprocess
 zookeeper_hosts = []
 for i in xrange(int(#{required_count})):
     zookeeper_hosts.append("%s-#{full_domain}" % (i+1))
