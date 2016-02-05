@@ -84,16 +84,12 @@ else:
     node = '#{server_type}-#{slug}-#{datacenter}-#{node.chef_environment}-#{location}-#{cluster_slug}'
 path = '/%s/' % (node)
 
+unicast_hosts = ['#{node[:ipaddress]}']
 if zk.exists(path):
     addresses = zk.children(path)
     elasticsearch_ip_list = list(set(addresses))
-    unicast_hosts = elasticsearch_ip_list
-    unicast_hosts.append('#{node[:ipaddress]}')
+    unicast_hosts = unicast_hosts + elasticsearch_ip_list
     unicast_hosts = list(set(unicast_hosts))
-    unicast_hosts = json.dumps(unicast_hosts)
-    f = open('#{Chef::Config[:file_cache_path]}/unicast_hosts','w')
-    f.write(unicast_hosts)
-    f.close()
     for ip_address in elasticsearch_ip_list:
         if ip_address!="#{node[:ipaddress]}":
             keypair_path = '/root/.ssh/#{keypair}'
@@ -136,6 +132,11 @@ if zk.exists(path):
           if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
               cmd = "/sbin/iptables -A OUTPUT -d  %s -j ACCEPT" % (ip_address)
               os.system(cmd)
+              
+unicast_hosts = json.dumps(unicast_hosts)
+f = open('#{Chef::Config[:file_cache_path]}/unicast_hosts','w')
+f.write(unicast_hosts)
+f.close()
 PYCODE
 end
 end
