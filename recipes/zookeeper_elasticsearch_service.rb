@@ -67,10 +67,12 @@ zookeeper_hosts = []
 for i in xrange(int(#{required_count})):
     zookeeper_hosts.append("%s-#{full_domain}" % (i+1))
 zk_host_list = []
+zookeeper_ip_address_list = []
 for aname in zookeeper_hosts:
   try:
       data =  dns.resolver.query(aname, 'A')
       zk_host_list.append(data[0].to_text()+':2181')
+      zookeeper_ip_address_list.append(data[0].to_text())
   except:
       print 'ERROR, dns.resolver.NXDOMAIN',aname
 zk_host_str = ','.join(zk_host_list)    
@@ -99,10 +101,18 @@ if zk.exists(path):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(ip_address, 22, username=username, pkey=key)
-            cmd = "sudo ufw allow from #{node[:ipaddress]}"
+            
+            ssh.connect(ip_address, 22, username=username, pkey=key) 
+            cmd = "/sbin/iptables -A INPUT -s #{node[:ipaddress]} -j ACCEPT"
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            cmd = "/sbin/iptables -A OUTPUT -d  #{node[:ipaddress]} -j ACCEPT"
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            cmd = "/etc/init.d/iptables-persistent save" 
             stdin, stdout, stderr = ssh.exec_command(cmd)
             out = stdout.read()
             err = stderr.read()
+            
+            
             cmd = "rm #{Chef::Config[:file_cache_path]}/unicast_hosts"
             stdin, stdout, stderr = ssh.exec_command(cmd)
             cmd = """echo '%s' | tee -a '#{Chef::Config[:file_cache_path]}/unicast_hosts'""" % unicast_hosts
@@ -112,7 +122,20 @@ if zk.exists(path):
             print "out--", out
             ssh.close()
             os.system("sudo ufw allow from %s" % ip_address) 
-        
+    for ip_address in zookeeper_ip_address_list:
+        cmd = "iptables -C INPUT -s %s -j ACCEPT" % (ip_address)
+        p = subprocess.Popen(cmd, shell=True,stderr=subprocess.STDOUT,stdout=subprocess.PIPE,executable="/bin/bash")
+        out = p.stdout.readline().strip()
+        if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+            cmd = "/sbin/iptables -A INPUT -s %s -j ACCEPT" % (ip_address)
+            os.system(cmd)
+            
+        cmd = "iptables -C OUTPUT -d %s -j ACCEPT" % (ip_address)
+        p = subprocess.Popen(cmd, shell=True,stderr=subprocess.STDOUT,stdout=subprocess.PIPE,executable="/bin/bash")
+        out = p.stdout.readline().strip()
+        if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+            cmd = "/sbin/iptables -A OUTPUT -d  %s -j ACCEPT" % (ip_address)
+            os.system(cmd)
 PYCODE
 end
 end
