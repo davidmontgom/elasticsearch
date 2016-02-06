@@ -99,7 +99,8 @@ def elasticearch(args):
         unicast_hosts = json.dumps(unicast_hosts)
         iptables_remote(ip_address,ip_address_list,keypair,username,unicast_hosts)
         iptables_local(ip_address,ip_address_list)
-                  
+    else: 
+        unicast_hosts = json.dumps(unicast_hosts)        
     f = open('/var/chef/cache/unicast_hosts','w')
     f.write(unicast_hosts)
     f.close()
