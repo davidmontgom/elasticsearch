@@ -45,7 +45,7 @@ bash "kibana_kibana" do
     touch /var/chef/cache/kibana.lock
   EOH
   action :run
-  not_if {File.exists?("/var/chef/cache/kibana.lock")}
+  not_if {File.exists?("/var/chef/cache/kibana.lock")} 
 end
 
 
