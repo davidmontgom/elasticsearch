@@ -49,8 +49,8 @@ easy_install_package "paramiko" do
   action :install
 end
 
-cookbook_file "/var/elasticsearch_cluster..py" do
-  source "elasticsearch_cluster..py"
+cookbook_file "/var/elasticsearch_cluster.py" do
+  source "elasticsearch_cluster.py"
   mode 00744
 end
 
