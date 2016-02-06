@@ -11,7 +11,7 @@ from zoo import *
 from pprint import pprint
 
     
-def iptables_remote(this_ip_address,ip_address_list,keypair,username):
+def iptables_remote(this_ip_address,ip_address_list,keypair,username,unicast_hosts):
     
     if this_ip_address in ip_address_list:
         ip_address_list.remove(this_ip_address)
@@ -25,34 +25,36 @@ def iptables_remote(this_ip_address,ip_address_list,keypair,username):
         ssh.connect(ip_address, 22, username=username, pkey=key)
         
         cmd = "iptables -C INPUT -s %s -j ACCEPT" % (this_ip_address)
-        output_list, error_list = ssh.ssh_execute_command(cmd)
-        output = ' '.join(output_list) + ' '.join(error_list)
-        print 'output:',output
-        if output.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
-            cmd = "/sbin/iptables -A INPUT -s %s -j ACCEPT" % (this_ip_address)
-            output_list, error_list = ssh.ssh_execute_command(cmd)
-        
-        cmd = "iptables -C OUTPUT -d this_ip_address -j ACCEPT" % (this_ip_address)
-        output_list, error_list = ssh.ssh_execute_command(cmd)
-        output = ' '.join(output_list) + ' '.join(error_list)
-        print 'output:',output
-        if output.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
-            print 'OUTPUT',server_type, ip_address, output
-            cmd = "/sbin/iptables -A OUTPUT -d %s -j ACCEPT" % (this_ip_address)
-            output_list, error_list = ssh.ssh_execute_command(cmd)
-        
-        cmd = "/etc/init.d/iptables-persistent save" 
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        error_list = stderr.readlines()
+        if error_list:
+            output = ' '.join(error_list)
+            if output.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0: 
+                cmd = "/sbin/iptables -A INPUT -s %s -j ACCEPT" % (this_ip_address)
+                print cmd
+                stdin, stdout, stderr = ssh.exec_command(cmd)
+                cmd = "rm /var/chef/cache/unicast_hosts"
+                stdin, stdout, stderr = ssh.exec_command(cmd)
         
-        cmd = "rm /var/chef/cache/unicast_hosts"
+        cmd = "iptables -C OUTPUT -d %s -j ACCEPT" % (this_ip_address)
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        error_list = stderr.readlines()
+        if error_list:
+            output = ' '.join(error_list)
+            if output.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+                cmd = "/sbin/iptables -A OUTPUT -d %s -j ACCEPT" % (this_ip_address)
+                print cmd
+                stdin, stdout, stderr = ssh.exec_command(cmd)
+                cmd = "/etc/init.d/iptables-persistent save" 
+                stdin, stdout, stderr = ssh.exec_command(cmd)
+        
+        
         
         cmd = """echo '%s' | tee -a '/var/chef/cache/unicast_hosts'""" % unicast_hosts
         stdin, stdout, stderr = ssh.exec_command(cmd)
-        
         out = stdout.read()
         err = stderr.read()
-        print "out--", out
+        print "unicast_hosts--", out
         ssh.close()
        
 
@@ -77,8 +79,6 @@ def iptables_local(this_ip_address,ip_address_list):
             cmd = "/sbin/iptables -A OUTPUT -d  %s -j ACCEPT" % (ip_address)
             os.system(cmd)
     
-    
-
 def elasticearch(args):
     
     zoo = zookeeper(args)
@@ -91,16 +91,15 @@ def elasticearch(args):
      
     unicast_hosts = [ip_address]
     if zk.exists(path):
-        
         addresses = zk.children(path)
         ip_address_list = list(set(addresses))
         unicast_hosts = unicast_hosts + ip_address_list
         unicast_hosts = list(set(unicast_hosts))
         
-        iptables_remote(ip_address,ip_address_list,keypair,username)
+        unicast_hosts = json.dumps(unicast_hosts)
+        iptables_remote(ip_address,ip_address_list,keypair,username,unicast_hosts)
         iptables_local(ip_address,ip_address_list)
                   
-    unicast_hosts = json.dumps(unicast_hosts)
     f = open('/var/chef/cache/unicast_hosts','w')
     f.write(unicast_hosts)
     f.close()
