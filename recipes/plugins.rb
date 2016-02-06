@@ -31,7 +31,7 @@ bash "marvel_install" do
   not_if {File.exists?("/var/chef/cache/elasticsearch-head.lock")}
 end
 
-kibana_version = "4.3.1"
+kibana_version = "4.4"
 bash "kibana_kibana" do
   user "root"
   cwd "/usr/share"
