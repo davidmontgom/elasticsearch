@@ -141,10 +141,10 @@ if __name__ == "__main__":
     fn = os.path.realpath(__file__)
     
     f = open('/tmp/%s_zk.sh' % fn.split('/')[-1].replace('.py',''),'w')
-    temp = '/usr/bin/python %s \\' % fn
-    f.write(temp + '\n')
+    temp = '/usr/bin/python %s ' % fn
+    f.write(temp)
     for arg in vars(args):
-        line =  '--%s %s \\ \n' % (arg, getattr(args, arg))
+        line =  '--%s %s ' % (arg, getattr(args, arg))
         f.write(line)
     f.close()
 
