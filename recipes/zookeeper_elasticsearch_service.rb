@@ -92,47 +92,60 @@ if zk.exists(path):
     unicast_hosts = unicast_hosts + elasticsearch_ip_list
     unicast_hosts = list(set(unicast_hosts))
     for ip_address in elasticsearch_ip_list:
-        if ip_address!="#{node[:ipaddress]}":
-            keypair_path = '/root/.ssh/#{keypair}'
-            key = paramiko.RSAKey.from_private_key_file(keypair_path)
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(ip_address, 22, username=username, pkey=key)
-            
-            ssh.connect(ip_address, 22, username=username, pkey=key) 
-            cmd = "/sbin/iptables -A INPUT -s #{node[:ipaddress]} -j ACCEPT"
-            stdin, stdout, stderr = ssh.exec_command(cmd)
-            cmd = "/sbin/iptables -A OUTPUT -d  #{node[:ipaddress]} -j ACCEPT"
-            stdin, stdout, stderr = ssh.exec_command(cmd)
-            cmd = "/etc/init.d/iptables-persistent save" 
-            stdin, stdout, stderr = ssh.exec_command(cmd)
-            out = stdout.read()
-            err = stderr.read()
-            
-            cmd = "rm #{Chef::Config[:file_cache_path]}/unicast_hosts"
-            stdin, stdout, stderr = ssh.exec_command(cmd)
-            cmd = """echo '%s' | tee -a '#{Chef::Config[:file_cache_path]}/unicast_hosts'""" % unicast_hosts
-            stdin, stdout, stderr = ssh.exec_command(cmd)
-            out = stdout.read()
-            err = stderr.read()
-            print "out--", out
-            ssh.close()
-            
-    for ip_address in zookeeper_ip_address_list:
-        if ip_address!="#{node[:ipaddress]}":
-          cmd = "iptables -C INPUT -s %s -j ACCEPT" % (ip_address)
-          p = subprocess.Popen(cmd, shell=True,stderr=subprocess.STDOUT,stdout=subprocess.PIPE,executable="/bin/bash")
-          out = p.stdout.readline().strip()
-          if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
-              cmd = "/sbin/iptables -A INPUT -s %s -j ACCEPT" % (ip_address)
-              os.system(cmd)
-              
-          cmd = "iptables -C OUTPUT -d %s -j ACCEPT" % (ip_address)
-          p = subprocess.Popen(cmd, shell=True,stderr=subprocess.STDOUT,stdout=subprocess.PIPE,executable="/bin/bash")
-          out = p.stdout.readline().strip()
-          if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
-              cmd = "/sbin/iptables -A OUTPUT -d  %s -j ACCEPT" % (ip_address)
-              os.system(cmd)
+      if ip_address!="#{node[:ipaddress]}":
+        keypair_path = '/root/.ssh/#{keypair}'
+        key = paramiko.RSAKey.from_private_key_file(keypair_path)
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip_address, 22, username=username, pkey=key)
+        
+        cmd = "iptables -C INPUT -s #{node[:ipaddress]} -j ACCEPT"
+        output_list, error_list = ssh.ssh_execute_command(cmd)
+        output = ' '.join(output_list) + ' '.join(error_list)
+        print 'output:',output
+        if output.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+            cmd = "/sbin/iptables -A INPUT -s #{node[:ipaddress]} -j ACCEPT" 
+            output_list, error_list = ssh.ssh_execute_command(cmd)
+        
+        cmd = "iptables -C OUTPUT -d #{node[:ipaddress]} -j ACCEPT" 
+        output_list, error_list = ssh.ssh_execute_command(cmd)
+        output = ' '.join(output_list) + ' '.join(error_list)
+        print 'output:',output
+        if output.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+            print 'OUTPUT',server_type, ip_address, output
+            cmd = "/sbin/iptables -A OUTPUT -d #{node[:ipaddress]} -j ACCEPT" 
+            output_list, error_list = ssh.ssh_execute_command(cmd)
+        
+        cmd = "/etc/init.d/iptables-persistent save" 
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        
+        cmd = "rm #{Chef::Config[:file_cache_path]}/unicast_hosts"
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        
+        cmd = """echo '%s' | tee -a '#{Chef::Config[:file_cache_path]}/unicast_hosts'""" % unicast_hosts
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        
+        out = stdout.read()
+        err = stderr.read()
+        print "out--", out
+        ssh.close()
+       
+       
+for ip_address in elasticsearch_ip_list:     
+  if ip_address!="#{node[:ipaddress]}":
+    cmd = "iptables -C INPUT -s %s -j ACCEPT" % (ip_address)
+    p = subprocess.Popen(cmd, shell=True,stderr=subprocess.STDOUT,stdout=subprocess.PIPE,executable="/bin/bash")
+    out = p.stdout.readline().strip()
+    if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+        cmd = "/sbin/iptables -A INPUT -s %s -j ACCEPT" % (ip_address)
+        os.system(cmd)
+        
+    cmd = "iptables -C OUTPUT -d %s -j ACCEPT" % (ip_address)
+    p = subprocess.Popen(cmd, shell=True,stderr=subprocess.STDOUT,stdout=subprocess.PIPE,executable="/bin/bash")
+    out = p.stdout.readline().strip()
+    if out.find('iptables: Bad rule (does a matching rule exist in that chain?).')>=0:
+        cmd = "/sbin/iptables -A OUTPUT -d  %s -j ACCEPT" % (ip_address)
+        os.system(cmd)
               
 unicast_hosts = json.dumps(unicast_hosts)
 f = open('#{Chef::Config[:file_cache_path]}/unicast_hosts','w')
