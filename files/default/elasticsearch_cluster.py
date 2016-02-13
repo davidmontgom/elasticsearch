@@ -29,8 +29,8 @@ def elasticearch(args):
         unicast_hosts = list(set(unicast_hosts))
     
         cmd_list = ["""echo '%s' | tee -a '/var/chef/cache/unicast_hosts'""" % unicast_hosts]
-        iptables_remote(ip_address,ip_address_list,keypair,username,cmd_list=cmd_list)
-        iptables_local(ip_address,ip_address_list)
+        iptables_remote(ip_address,ip_address_list,keypair,username,cmd_list=cmd_list,datacenter=arg.datacenter)
+        iptables_local(ip_address,ip_address_list,datacenter=arg.datacenter)
     else: 
         unicast_hosts = json.dumps(unicast_hosts)        
     f = open('/var/chef/cache/unicast_hosts','w')
