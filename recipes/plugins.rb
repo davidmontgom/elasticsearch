@@ -18,6 +18,8 @@ end
 #http://1-elasticsearch-do-development-ny-forex.forexhui.com:5601/app/marvel
 
 
+
+
 bash "marvel_install" do
   user "root"
   cwd "/usr/share"
@@ -46,6 +48,19 @@ bash "kibana_kibana" do
   EOH
   action :run
   not_if {File.exists?("/var/chef/cache/kibana.lock")} 
+end
+
+
+bash "sense_install" do
+  user "root"
+  cwd "/var"
+  code <<-EOH
+    cd /var/kibana-#{kibana_version}-linux-x64
+    sudo bin/kibana plugin --install elastic/sense
+    touch /var/chef/cache/sense.lock
+  EOH
+  action :run
+  not_if {File.exists?("/var/chef/cache/sense.lock")}
 end
 
 
