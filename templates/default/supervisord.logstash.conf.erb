@@ -1,0 +1,27 @@
+[program:logstash]
+
+command = <%=@version%>/bin/logstash agent -f logstash.conf
+
+process_name=%(program_name)s
+autostart=true
+autorestart=true
+stopsignal=KILL
+stopasgroup = true
+killasgroup = true
+
+
+stdout_logfile=/tmp/logstash.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=1
+
+stderr_logfile = /tmp/logstash.err
+stderr_logfile_maxbytes=1MB
+stderr_logfile_backups=1
+
+
+[group:logstash_server]
+programs=logstash
+
+
+
+
