@@ -65,7 +65,7 @@ end
 dpkg_package "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
   action :install
 end
-
+ 
 
 service "elasticsearch" do
   supports :restart => true, :start => true, :stop => true
