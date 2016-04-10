@@ -14,18 +14,24 @@ dpkg_package "#{Chef::Config[:file_cache_path]}/logstash_#{version}_all.deb" do
 end
  
  
-=begin
-service "supervisord"
+service "logstash" do
+  supports :start => true, :stop => true, :restart => true
+  action [ :enable, :start]
+end
 
-template "/var/logstash.conf " do
-    path "/var/logstash.conf"
+
+template "/etc/logstash/conf.d/logstash.conf" do
+    path "/etc/logstash/conf.d/logstash.conf"
     source "logstash.#{version}.conf.erb"
     owner "root"
     group "root"
     mode "0755"
-    notifies :restart, resources(:service => "supervisord")
+    notifies :restart, resources(:service => "logstash")
 end
   
+=begin
+ service "supervisord" 
+
 template "/etc/supervisor/conf.d/supervisord.logstash.conf" do
       path "/etc/supervisor/conf.d/supervisord.logstash.conf"
       source "supervisord.logstash.conf.erb"
@@ -38,4 +44,14 @@ template "/etc/supervisor/conf.d/supervisord.logstash.conf" do
       notifies :restart, resources(:service => "supervisord")
 end
 =end
+
+logrotate_app "logstash-rotate" do
+  cookbook "logrotate"
+  path ["/var/log/logstash/logstash.log"]
+  frequency "daily"
+  rotate 1
+  size "1M"
+  create "644 root root"
+end
+
 

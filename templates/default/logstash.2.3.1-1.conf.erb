@@ -1,0 +1,19 @@
+
+input {
+	beats {
+        port => "5043"
+        ssl => false
+    }
+}
+
+# The filter part of this file is commented out to indicate that it is
+# optional.
+# filter {
+#
+# }
+
+
+output {
+	elasticsearch {hosts => ["127.0.0.1:9200"]}
+    stdout {}
+}

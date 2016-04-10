@@ -1,6 +1,6 @@
-[program:logstash]
+[program:filebeat]
 
-command = /opt/logstash/bin/logstash agent -f /etc/logstash/conf.d/logstash.conf
+command = <%=@version%>/filebeat -e -c /var/filebeat.yml
 
 process_name=%(program_name)s
 autostart=true
@@ -10,17 +10,17 @@ stopasgroup = true
 killasgroup = true
 
 
-stdout_logfile=/tmp/logstash.log
+stdout_logfile=/tmp/filebeat.log
 stdout_logfile_maxbytes=1MB
 stdout_logfile_backups=1
 
-stderr_logfile = /tmp/logstash.err
+stderr_logfile = /tmp/filebeat.err
 stderr_logfile_maxbytes=1MB
 stderr_logfile_backups=1
 
 
-[group:logstash_server]
-programs=logstash
+[group:filebeat_server]
+programs=filebeat
 
 
 
