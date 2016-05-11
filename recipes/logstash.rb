@@ -1,6 +1,17 @@
 
-
-
+=begin
+ 
+ If want to use redis add the below and besure to add redis to haproxy
+ 
+ redis { 
+    host => "localhost" 
+    type => "redis-input" 
+    data_type => "list" 
+    key => "logstash" 
+  } 
+ 
+  
+=end
 
 
 version = '2.3.1-1'
