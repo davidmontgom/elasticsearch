@@ -40,6 +40,8 @@ bash 'ES_HEAP_SIZE' do
     touch /tmp/wow_#{heap_size}
     export ES_HEAP_SIZE=#{heap_size}
     echo 'export ES_HEAP_SIZE=#{heap_size}' | tee -a /root/.bashrc
+    echo 'elasticsearch soft memlock unlimited' | tee -a /etc/security/limits.conf
+    echo 'elasticsearch hard memlock unlimited' | tee -a /etc/security/limits.conf
     source /root/.bashrc
   EOH
   environment 'ES_HEAP_SIZE' => '#{heap_size}'
@@ -123,3 +125,17 @@ if location!='local'
   end
   
 end
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
