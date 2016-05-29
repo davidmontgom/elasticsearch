@@ -36,18 +36,28 @@ end
 
 bash 'ES_HEAP_SIZE' do
   code <<-EOH 
+    ulimit -l unlimited
     touch /var/chef/cache/heap.lock
     touch /tmp/wow_#{heap_size}
     export ES_HEAP_SIZE=#{heap_size}
     echo 'export ES_HEAP_SIZE=#{heap_size}' | tee -a /root/.bashrc
     echo 'elasticsearch soft memlock unlimited' | tee -a /etc/security/limits.conf
     echo 'elasticsearch hard memlock unlimited' | tee -a /etc/security/limits.conf
+    sysctl -w vm.max_map_count=262144
     source /root/.bashrc
   EOH
   environment 'ES_HEAP_SIZE' => '#{heap_size}'
   action :run
   not_if {File.exists?("/var/chef/cache/heap.lock")}
 end
+
+
+ curl http://localhost:9200/_nodes/process?pretty
+ curl -XGET 'http://localhost:9200/_cluster/health?pretty=true'
+
+
+
+
 
 
 
