@@ -44,6 +44,8 @@ bash 'ES_HEAP_SIZE' do
     echo 'elasticsearch soft memlock unlimited' | tee -a /etc/security/limits.conf
     echo 'elasticsearch hard memlock unlimited' | tee -a /etc/security/limits.conf
     sysctl -w vm.max_map_count=262144
+    sysctl -w vm.swappiness=1
+    sysctl -w fs.file-max = 100000
     source /root/.bashrc
   EOH
   environment 'ES_HEAP_SIZE' => '#{heap_size}'
@@ -51,9 +53,12 @@ bash 'ES_HEAP_SIZE' do
   not_if {File.exists?("/var/chef/cache/heap.lock")}
 end
 
-
+=begin
  curl http://localhost:9200/_nodes/process?pretty
+ curl localhost:9200/_nodes/stats/process?pretty
  curl -XGET 'http://localhost:9200/_cluster/health?pretty=true'
+ cat /proc/sys/fs/file-max
+=end
 
 
 
