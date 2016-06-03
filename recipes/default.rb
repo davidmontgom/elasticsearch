@@ -34,6 +34,12 @@ if ram>1
   heap_size = "#{heap_size}g"
 end
 
+#https://discuss.elastic.co/t/how-to-check-es-heap-size/36613/5
+#curl -sS -XGET "localhost:9200/_cat/nodes?h=heap*&v"
+#sed -i -e '2iES_HEAP_SIZE=4g\' /etc/init.d/elasticsearch
+
+
+
 bash 'ES_HEAP_SIZE' do
   code <<-EOH 
     ulimit -l unlimited
@@ -82,6 +88,18 @@ end
 dpkg_package "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
   action :install
 end
+
+
+bash 'ES_HEAP_SIZE_init' do
+  code <<-EOH 
+    sed -i -e '2iES_HEAP_SIZE=#{heap_size}\' /etc/init.d/elasticsearch
+    touch /var/chef/cache/heap_init.lock
+  EOH
+  action :run
+  not_if {File.exists?("/var/chef/cache/heap_init.lock")}
+end
+
+
  
 
 service "elasticsearch" do
