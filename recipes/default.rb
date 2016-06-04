@@ -51,7 +51,7 @@ bash 'ES_HEAP_SIZE' do
     echo 'elasticsearch hard memlock unlimited' | tee -a /etc/security/limits.conf
     sysctl -w vm.max_map_count=262144
     sysctl -w vm.swappiness=1
-    sysctl -w fs.file-max = 100000
+    sysctl -w fs.file-max=100000
     source /root/.bashrc
   EOH
   environment 'ES_HEAP_SIZE' => '#{heap_size}'
