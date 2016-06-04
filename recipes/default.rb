@@ -42,7 +42,7 @@ end
 
 bash 'ES_HEAP_SIZE' do
   code <<-EOH 
-    ulimit -l unlimited
+    
     touch /var/chef/cache/heap.lock
     touch /tmp/wow_#{heap_size}
     export ES_HEAP_SIZE=#{heap_size}
@@ -52,6 +52,7 @@ bash 'ES_HEAP_SIZE' do
     sysctl -w vm.max_map_count=262144
     sysctl -w vm.swappiness=1
     sysctl -w fs.file-max=100000
+    ulimit -l unlimited
     source /root/.bashrc
   EOH
   environment 'ES_HEAP_SIZE' => '#{heap_size}'
@@ -92,6 +93,7 @@ end
 
 bash 'ES_HEAP_SIZE_init' do
   code <<-EOH 
+    ulimit -l unlimited
     sed -i -e '2iES_HEAP_SIZE=#{heap_size}\' /etc/init.d/elasticsearch
     touch /var/chef/cache/heap_init.lock
   EOH
