@@ -30,7 +30,7 @@ if ram==1
   heap_size='512m'
 end
 if ram>1
-  heap_size = (ram*0.5).round*1000
+  heap_size = (ram*0.5).round/1000
   heap_size = "#{heap_size}g"
 end
 
