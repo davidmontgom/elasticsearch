@@ -37,7 +37,7 @@ end
 #https://discuss.elastic.co/t/how-to-check-es-heap-size/36613/5
 #curl -sS -XGET "localhost:9200/_cat/nodes?h=heap*&v"
 #sed -i -e '2iES_HEAP_SIZE=4g\' /etc/init.d/elasticsearch
-
+#https://github.com/elastic/elasticsearch/issues/9357
 
 
 bash 'ES_HEAP_SIZE' do
