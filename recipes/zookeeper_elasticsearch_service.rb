@@ -9,6 +9,8 @@ cluster_slug = cluster_slug.gsub(/\n/, "")
   
 data_bag("meta_data_bag")
 aws = data_bag_item("meta_data_bag", "aws")
+domain = aws[node.chef_environment]["route53"]["domain"]
+zone_id = aws[node.chef_environment]["route53"]["zone_id"]
 AWS_ACCESS_KEY_ID = aws[node.chef_environment]['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = aws[node.chef_environment]['AWS_SECRET_ACCESS_KEY']
 
