@@ -65,6 +65,10 @@ end
  curl localhost:9200/_nodes/stats/process?pretty
  curl -XGET 'http://localhost:9200/_cluster/health?pretty=true'
  cat /proc/sys/fs/file-max
+ 
+ curl -s localhost:9200/_nodes?pretty|grep mlockall
+ 
+ https://github.com/elastic/elasticsearch/issues/9357
 =end
 
 
@@ -95,6 +99,7 @@ bash 'ES_HEAP_SIZE_init' do
   code <<-EOH 
     ulimit -l unlimited
     sed -i -e '2iES_HEAP_SIZE=#{heap_size}\' /etc/init.d/elasticsearch
+    sed -i -e 's/#LimitMEMLOCK=infinity/LimitMEMLOCK=infinity/g' /usr/lib/systemd/system/elasticsearch.service
     touch /var/chef/cache/heap_init.lock
   EOH
   action :run
