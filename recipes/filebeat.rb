@@ -1,6 +1,6 @@
 
 
-version = '1.2.1'
+version = '1.2.3'
 remote_file "#{Chef::Config[:file_cache_path]}/filebeat_#{version}_amd64.deb" do
     source "https://download.elastic.co/beats/filebeat/filebeat_#{version}_amd64.deb"
     action :create_if_missing

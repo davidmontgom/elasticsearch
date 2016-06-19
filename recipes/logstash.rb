@@ -15,7 +15,7 @@
 
 
 
-version = '2.3.2-1'
+version = '2.3.3'
 remote_file "#{Chef::Config[:file_cache_path]}/logstash_#{version}_all.deb" do
     source "https://download.elastic.co/logstash/logstash/packages/debian/logstash_#{version}_all.deb"
     action :create_if_missing

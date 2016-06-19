@@ -34,7 +34,7 @@ bash "marvel_install" do
 end
 
 
-kibana_version = "4.5.0"
+kibana_version = "4.5.1"
 bash "kibana_kibana" do
   user "root"
   cwd "/usr/share"
