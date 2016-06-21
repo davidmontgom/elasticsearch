@@ -99,3 +99,8 @@ discovery.zen.ping.unicast.hosts: <%=@unicast_hosts%>
 
 http.max_content_length: 1000mb
 http.netty.maxInitialLineLength: 1000mb
+
+threadpool.search.type: fixed
+threadpool.search.size: 200
+threadpool.search.queue_size: 20000
+
