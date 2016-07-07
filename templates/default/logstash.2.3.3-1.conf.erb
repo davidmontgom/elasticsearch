@@ -1,0 +1,32 @@
+
+input {
+	beats {
+        port => "5043"
+        ssl => false
+        codec => "json"
+    }
+    
+    #redis { 
+	#    host => "localhost" 
+	#    type => "redis-input" 
+	#    data_type => "list" 
+	#    key => "logstash" 
+    #} 
+}
+
+# The filter part of this file is commented out to indicate that it is
+# optional.
+# filter {
+#
+# }
+
+
+output {
+	elasticsearch {hosts => ["127.0.0.1:9200"]
+	sniffing => true
+    manage_template => false
+    index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+    document_type => "%{[@metadata][type]}"
+	}
+    stdout {}
+}
