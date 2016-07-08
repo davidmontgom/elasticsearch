@@ -36,7 +36,7 @@ end
 
 kibana_version = "4.5.1"
 remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
-    source "wget https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
+    source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
     action :create_if_missing
 end
 
