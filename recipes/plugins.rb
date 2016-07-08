@@ -35,12 +35,16 @@ end
 
 
 kibana_version = "4.5.1"
+remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
+    source "wget https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
+    action :create_if_missing
+end
+
 bash "kibana_kibana" do
   user "root"
   cwd "/usr/share"
   code <<-EOH
     cd /var
-    wget https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz
     tar -xvf kibana-#{kibana_version}-linux-x64.tar.gz
     cd kibana-#{kibana_version}-linux-x64
     bin/kibana plugin --install elasticsearch/marvel/latest
