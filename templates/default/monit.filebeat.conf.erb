@@ -1,0 +1,5 @@
+check process filebeat
+  with pidfile "/var/run/filebeat.pid"
+  start program = "/etc/init.d/filebeat start"
+  stop program = "/etc/init.d/filebeat stop"
+  
