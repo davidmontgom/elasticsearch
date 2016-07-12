@@ -34,7 +34,7 @@ bash "marvel_install" do
 end
 
 
-kibana_version = "4.5.1"
+kibana_version = "4.5.2"
 remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
     source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
     action :create_if_missing
