@@ -14,8 +14,7 @@
 =end
 
 
-
-version = '2.3.3-1'
+version = node[:logstash][:version]
 remote_file "#{Chef::Config[:file_cache_path]}/logstash_#{version}_all.deb" do
     source "https://download.elastic.co/logstash/logstash/packages/debian/logstash_#{version}_all.deb"
     action :create_if_missing
@@ -65,5 +64,37 @@ logrotate_app "logstash-rotate" do
   size "1M"
   create "644 root root"
 end
+
+=begin
+ 
+ 
+/opt/logstash/bin/logstash --configtest -f /etc/logstash/conf.d/ 
+
+curl -L -O https://download.elastic.co/beats/dashboards/beats-dashboards-1.2.3.zip
+
+=end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
