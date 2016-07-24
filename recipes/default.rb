@@ -69,6 +69,8 @@ end
  curl -s localhost:9200/_nodes?pretty|grep mlockall
  
  https://github.com/elastic/elasticsearch/issues/9357
+ 
+ https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elk-stack-on-ubuntu-16-04
 =end
 
 

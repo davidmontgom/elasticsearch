@@ -34,7 +34,7 @@ bash "marvel_install" do
 end
 
 
-kibana_version = "4.5.2"
+kibana_version = node[:kibana][:version]
 remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
     source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
     action :create_if_missing
@@ -75,7 +75,7 @@ template "/var/kibana-#{kibana_version}-linux-x64/config/kibana.yml" do
     owner "root"
     group "root"
     mode "0755"
-    notifies :restart, resources(:service => "elasticsearch")
+    #notifies :restart, resources(:service => "elasticsearch")
 end
 
 service "supervisord"

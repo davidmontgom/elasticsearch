@@ -2,6 +2,7 @@ default['elasticsearch']['data_directory'] = "/data"
 default[:elasticsearch][:version] = "2.3.4"
 default[:logstash][:version] = "2.3.3-1"
 default[:filebeat][:version] = "1.2.3"
+default[:kibana][:version] = "4.5.2"
 
 
 
