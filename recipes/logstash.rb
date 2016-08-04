@@ -14,7 +14,7 @@
 =end
 
 
-version = node[:logstash][:version]
+version = node[:elasticsearch][:logstash][:version]
 remote_file "#{Chef::Config[:file_cache_path]}/logstash_#{version}_all.deb" do
     source "https://download.elastic.co/logstash/logstash/packages/debian/logstash_#{version}_all.deb"
     action :create_if_missing
