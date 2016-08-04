@@ -34,7 +34,7 @@ bash "marvel_install" do
 end
 
 
-kibana_version = node[:kibana][:version]
+kibana_version = node[:elasticsearch][:kibana][:version]
 remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
     source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
     action :create_if_missing
