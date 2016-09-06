@@ -39,7 +39,6 @@ end
 kibana_version = node[:elasticsearch][:kibana][:version]
 remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
     source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x86_64.tar.gz"
-
     action :create_if_missing
 end
 
@@ -51,10 +50,10 @@ bash "kibana_kibana" do
     tar -xvf kibana-#{kibana_version}-linux-x86_64.tar.gz
     cd kibana-#{kibana_version}-linux-x86_64
     bin/kibana plugin --install elasticsearch/marvel/latest
-    touch /var/chef/cache/kibana.lock
+    touch /var/chef/cache/kibana_#{kibana_version}.lock
   EOH
   action :run
-  not_if {File.exists?("/var/chef/cache/kibana.lock")} 
+  not_if {File.exists?("/var/chef/cache/kibana_#{kibana_version}.lock")} 
 end
 
 
@@ -64,10 +63,10 @@ bash "sense_install" do
   code <<-EOH
     cd /var/kibana-#{kibana_version}-linux-x86_64
     sudo bin/kibana plugin --install elastic/sense
-    touch /var/chef/cache/sense.lock
+    touch /var/chef/cache/sense_#{kibana_version}.lock
   EOH
   action :run
-  not_if {File.exists?("/var/chef/cache/sense.lock")}
+  not_if {File.exists?("/var/chef/cache/sense_#{kibana_version}.lock")}
 end
 
 
