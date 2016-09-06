@@ -33,10 +33,13 @@ bash "marvel_install" do
   not_if {File.exists?("/var/chef/cache/elasticsearch-head.lock")}
 end
 
+#https://download.elastic.co/kibana/kibana/kibana-4.6.0-amd64.deb
+# https://download.elastic.co/kibana/kibana/kibana-4.6.0-linux-x86_64.tar.gz
 
 kibana_version = node[:elasticsearch][:kibana][:version]
 remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
-    source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x64.tar.gz"
+    source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x86_64.tar.gz"
+
     action :create_if_missing
 end
 
