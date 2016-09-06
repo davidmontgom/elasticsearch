@@ -48,8 +48,8 @@ bash "kibana_kibana" do
   cwd "/usr/share"
   code <<-EOH
     cd /var
-    tar -xvf kibana-#{kibana_version}-linux-x64.tar.gz
-    cd kibana-#{kibana_version}-linux-x64
+    tar -xvf kibana-#{kibana_version}-linux-x86_64.tar.gz
+    cd kibana-#{kibana_version}-linux-x86_64
     bin/kibana plugin --install elasticsearch/marvel/latest
     touch /var/chef/cache/kibana.lock
   EOH
@@ -62,7 +62,7 @@ bash "sense_install" do
   user "root"
   cwd "/var"
   code <<-EOH
-    cd /var/kibana-#{kibana_version}-linux-x64
+    cd /var/kibana-#{kibana_version}-linux-x86_64
     sudo bin/kibana plugin --install elastic/sense
     touch /var/chef/cache/sense.lock
   EOH
@@ -72,8 +72,8 @@ end
 
 
 
-template "/var/kibana-#{kibana_version}-linux-x64/config/kibana.yml" do
-    path "/var/kibana-#{kibana_version}-linux-x64/config/kibana.yml"
+template "/var/kibana-#{kibana_version}-linux-x86_64/config/kibana.yml" do
+    path "/var/kibana-#{kibana_version}-linux-x86_64/config/kibana.yml"
     source "kibana.#{kibana_version}.yml.erb"
     owner "root"
     group "root"
