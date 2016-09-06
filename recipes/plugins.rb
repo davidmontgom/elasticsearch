@@ -37,7 +37,7 @@ end
 # https://download.elastic.co/kibana/kibana/kibana-4.6.0-linux-x86_64.tar.gz
 
 kibana_version = node[:elasticsearch][:kibana][:version]
-remote_file "/var/kibana-#{kibana_version}-linux-x64.tar.gz" do
+remote_file "/var/kibana-#{kibana_version}-linux-x86_64.tar.gz" do
     source "https://download.elastic.co/kibana/kibana/kibana-#{kibana_version}-linux-x86_64.tar.gz"
     action :create_if_missing
 end
