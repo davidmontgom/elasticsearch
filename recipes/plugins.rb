@@ -55,7 +55,7 @@ bash "kibana_kibana" do
   action :run
   not_if {File.exists?("/var/chef/cache/kibana_#{kibana_version}.lock")} 
 end
-
+ 
 
 bash "sense_install" do
   user "root"
