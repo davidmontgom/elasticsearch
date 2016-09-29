@@ -7,7 +7,7 @@ cluster_slug = File.read("/var/cluster_slug.txt")
 cluster_slug = cluster_slug.gsub(/\n/, "") 
 
 
-data_directory = "/data"
+data_directory = '/data''
 
 
 if location!='local'
@@ -41,8 +41,7 @@ end
 
 
 bash 'ES_HEAP_SIZE' do
-  code <<-EOH 
-    
+  code <<-EOH
     touch /var/chef/cache/heap.lock
     touch /tmp/wow_#{heap_size}
     export ES_HEAP_SIZE=#{heap_size}
@@ -79,7 +78,7 @@ end
 
 
 
-if cluster_slug=="nocluster"
+if cluster_slug=='nocluster'
   clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}"
 else
   clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}#{cluster_slug}"
@@ -108,8 +107,8 @@ bash 'ES_HEAP_SIZE_init' do
   not_if {File.exists?("/var/chef/cache/heap_init.lock")}
 end
 
-
- 
+#ES_HEAP_SIZE
+ #/usr/lib/systemd/system/elasticsearch.service
 
 service "elasticsearch" do
   supports :restart => true, :start => true, :stop => true
