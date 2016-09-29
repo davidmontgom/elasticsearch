@@ -7,7 +7,7 @@ cluster_slug = File.read("/var/cluster_slug.txt")
 cluster_slug = cluster_slug.gsub(/\n/, "") 
 
 
-data_directory = '/data''
+data_directory = '/data'
 
 
 if location!="local"
@@ -40,7 +40,7 @@ end
 #https://github.com/elastic/elasticsearch/issues/9357
 
 
-bash 'ES_HEAP_SIZE' do
+bash "ES_HEAP_SIZE" do
   code <<-EOH
     touch /var/chef/cache/heap.lock
     touch /tmp/wow_#{heap_size}
@@ -96,7 +96,7 @@ dpkg_package "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
 end
 
 
-bash 'ES_HEAP_SIZE_init' do
+bash "ES_HEAP_SIZE_init" do
   code <<-EOH 
     ulimit -l unlimited
     sed -i -e '2iES_HEAP_SIZE=#{heap_size}\' /etc/init.d/elasticsearch
