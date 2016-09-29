@@ -10,7 +10,7 @@ cluster_slug = cluster_slug.gsub(/\n/, "")
 data_directory = '/data''
 
 
-if location!='local'
+if location!="local"
   bash "swap" do
     user "root"
     code <<-EOH
@@ -147,7 +147,7 @@ directory "/etc/elasticsearch/templates" do
 end
 
 
-if location!='local'
+if location!="local"
   if File.exists?("#{Chef::Config[:file_cache_path]}/unicast_hosts")
     unicast_hosts = File.read("#{Chef::Config[:file_cache_path]}/unicast_hosts")
   else
