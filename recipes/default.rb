@@ -84,10 +84,24 @@ else
   clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}#{cluster_slug}"
 end
 
+package "apt-transport-https" do
+  action :install
+end
+
+
+bash 'add-repo' do
+  code <<-EOH
+  wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+  echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+  EOH
+  action :run
+  not_if {File.exists?("/etc/apt/sources.list.d/elastic-5.x.list")}
+end
+
 
 version = node[:elasticsearch][:version]
 remote_file "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
-    source "https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/#{version}/elasticsearch-#{version}.deb"
+    source "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{version}.deb"
     action :create_if_missing
 end
 
