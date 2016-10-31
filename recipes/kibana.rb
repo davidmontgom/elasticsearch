@@ -21,7 +21,7 @@ remote_file "#{Chef::Config[:file_cache_path]}/kibana-#{kibana_version}-amd64.de
     action :create_if_missing
 end
 
-dpkg_package "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
+dpkg_package "#{Chef::Config[:file_cache_path]}/kibana-#{kibana_version}-amd64.deb" do
   action :install
 end
 
