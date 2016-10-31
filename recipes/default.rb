@@ -115,6 +115,8 @@ bash "ES_HEAP_SIZE_init" do
     ulimit -l unlimited
     sed -i -e '2iES_HEAP_SIZE=#{heap_size}\' /etc/init.d/elasticsearch
     sed -i -e 's/#LimitMEMLOCK=infinity/LimitMEMLOCK=infinity/g' /usr/lib/systemd/system/elasticsearch.service
+    echo 'session    required   pam_limits.so' | tee -a /etc/pam.d/su
+    echo 'MAX_LOCKED_MEMORY=unlimited' | tee -a /etc/default/elasticsearch
     touch /var/chef/cache/heap_init.lock
   EOH
   action :run
@@ -180,6 +182,9 @@ if location!="local"
   end
   
 end
+
+
+
 
 
 
