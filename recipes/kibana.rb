@@ -30,16 +30,17 @@ service "kibana" do
   action [ :enable, :start]
 end
 
-=begin
-template "/var/kibana-#{kibana_version}-linux-x86_64/config/kibana.yml" do
-    path "/var/kibana-#{kibana_version}-linux-x86_64/config/kibana.yml"
+
+template "/etc/kibana/kibana.yml" do
+    path "/etc/kibana/kibana.yml"
     source "kibana.#{kibana_version}.yml.erb"
     owner "root"
     group "root"
     mode "0755"
-    #notifies :restart, resources(:service => "elasticsearch")
+    notifies :restart, resources(:service => "kibana")
 end
 
+=begin
 service "supervisord"
 template "/etc/supervisor/conf.d/supervisord.kibana.conf" do
       path "/etc/supervisor/conf.d/supervisord.kibana.conf"
