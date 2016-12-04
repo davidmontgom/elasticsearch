@@ -10,9 +10,9 @@ cluster_slug = cluster_slug.gsub(/\n/, "")
 data_directory = '/data'
 
 
-if location!="local"
-  bash "swap" do
-    user "root"
+if location!='local'
+  bash 'swap' do
+    user 'root'
     code <<-EOH
       swapoff -a
       touch /var/chef/cache/swap.lock
@@ -39,7 +39,7 @@ end
 #sed -i -e '2iES_HEAP_SIZE=4g\' /etc/init.d/elasticsearch
 #https://github.com/elastic/elasticsearch/issues/9357
 
-
+=begin
 bash "ES_HEAP_SIZE" do
   code <<-EOH
     touch /var/chef/cache/heap.lock
@@ -58,6 +58,7 @@ bash "ES_HEAP_SIZE" do
   action :run
   not_if {File.exists?("/var/chef/cache/heap.lock")}
 end
+=end
 
 =begin
  curl http://localhost:9200/_nodes/process?pretty
@@ -78,13 +79,13 @@ end
 
 
 
-if cluster_slug=='nocluster'
+if cluster_slug == 'nocluster'
   clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}"
 else
   clustername = "elasticsearch#{slug}#{datacenter}#{location}#{node.chef_environment}#{cluster_slug}"
 end
 
-package "apt-transport-https" do
+package 'apt-transport-https' do
   action :install
 end
 
@@ -95,7 +96,7 @@ bash 'add-repo' do
   echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
   EOH
   action :run
-  not_if {File.exists?("/etc/apt/sources.list.d/elastic-5.x.list")}
+  not_if {File.exists?('/etc/apt/sources.list.d/elastic-5.x.list')}
 end
 
 
@@ -109,7 +110,7 @@ dpkg_package "#{Chef::Config[:file_cache_path]}/elasticsearch-#{version}.deb" do
   action :install
 end
 
-
+=begin
 bash "ES_HEAP_SIZE_init" do
   code <<-EOH 
     ulimit -l unlimited
@@ -120,8 +121,9 @@ bash "ES_HEAP_SIZE_init" do
     touch /var/chef/cache/heap_init.lock
   EOH
   action :run
-  not_if {File.exists?("/var/chef/cache/heap_init.lock")}
+  not_if {File.exists?('/var/chef/cache/heap_init.lock')}
 end
+=end
 
 #ES_HEAP_SIZE
  #/usr/lib/systemd/system/elasticsearch.service
