@@ -12,7 +12,7 @@ if server_type == 'elasticsearch'
     end
 end
 
-if server_type = 'kibana'
+if server_type == 'kibana'
     bash 'kibana_xpack' do
         code <<-EOH
         cd /usr/share/kibana/
