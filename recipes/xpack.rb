@@ -8,6 +8,7 @@ if server_type == 'elasticsearch'
         echo 'y' |  bin/elasticsearch-plugin install x-pack
         EOH
     action :run
+    not_if {File.exists?("/usr/share/elasticsearch/plugins/x-pack")}
     end
 end
 
@@ -18,6 +19,7 @@ if server_type = 'kibana'
         echo 'y' | bin/kibana-plugin install x-pack
         EOH
     action :run
+    not_if {File.exists?("/usr/share/kibana/plugins/x-pack")}
     end
 end
 
