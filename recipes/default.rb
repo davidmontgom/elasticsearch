@@ -166,6 +166,27 @@ end
 
 
 if location!="local"
+
+  template "/etc/elasticsearch/jvm.options" do
+      path "/etc/elasticsearch/jvm.options"
+      source "jvm.options.erb"
+      owner "root"
+      group "root"
+      mode "0755"
+      variables lazy {{:heap_size => "#{heap_size}"}}
+      #notifies :restart, resources(:service => "elasticsearch")
+    end
+
+    template "/etc/default/elasticsearch" do
+      path "/etc/default/elasticsearch"
+      source "elasticsearch.erb"
+      owner "root"
+      group "root"
+      mode "0755"
+      variables lazy {{:heap_size => "#{heap_size}"}}
+      #notifies :restart, resources(:service => "elasticsearch")
+    end
+
   if File.exists?("#{Chef::Config[:file_cache_path]}/unicast_hosts")
     unicast_hosts = File.read("#{Chef::Config[:file_cache_path]}/unicast_hosts")
   else
