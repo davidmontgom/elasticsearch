@@ -3,14 +3,23 @@ slug = node.name.split('-')[1]
 datacenter = node.name.split('-')[2]
 environment = node.name.split('-')[3]
 location = node.name.split('-')[4]
-cluster_slug = File.read("/var/cluster_slug.txt")
+cluster_slug = File.read('/var/cluster_slug.txt')
 cluster_slug = cluster_slug.gsub(/\n/, "") 
+
+=begin
+
+If you’re upgrading a production cluster, perform a rolling upgrade to ensure 
+recovery is as quick as possible. Rolling upgrades are supported when upgrading 
+to a new minor version. A full cluster restart is required 
+when upgrading to a new major version.
+
+=end
 
 
 data_directory = '/data'
 
 
-if location!='local'
+if location != 'local'
   bash 'swap' do
     user 'root'
     code <<-EOH
@@ -18,7 +27,7 @@ if location!='local'
       touch /var/chef/cache/swap.lock
     EOH
     action :run
-    not_if {File.exists?("/var/chef/cache/swap.lock")}
+    not_if {File.exists?('/var/chef/cache/swap.lock')}
   end
 end
 
@@ -26,11 +35,11 @@ end
 ram = node['memory']['total'].to_i / 1000
 heap_size = (ram*0.5)
 
-if ram==1
-  heap_size='512m'
+if ram == 1
+  heap_size = '512m'
 end
 if ram>1
-  heap_size = (ram*0.5).round/1000
+  heap_size = (ram * 0.5).round / 1000
   heap_size = "#{heap_size}g"
 end
 

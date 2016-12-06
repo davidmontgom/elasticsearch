@@ -1,3 +1,18 @@
+server_type = node.name.split('-')[0]
+slug = node.name.split('-')[1] 
+datacenter = node.name.split('-')[2]
+environment = node.name.split('-')[3]
+location = node.name.split('-')[4]
+cluster_slug = File.read('/var/cluster_slug.txt')
+cluster_slug = cluster_slug.gsub(/\n/, "") 
+
+
+elasticsearch_server = data_bag_item("server_data_bag", "elasticsearch")
+if elasticsearch_server['haproxy'].has_key?("elasticsearch-#{cluster_slug}")
+  es_proxy_port = elasticsearch_server['haproxy']["elasticsearch-hugo"]["proxy_port"]
+else
+  es_proxy_port = 9200
+end
 
 package 'apt-transport-https' do
   action :install
@@ -37,6 +52,7 @@ template "/etc/kibana/kibana.yml" do
     owner "root"
     group "root"
     mode "0755"
+    variables lazy {{:es_proxy_port => "#{es_proxy_port}"}}
     notifies :restart, resources(:service => "kibana")
 end
 
