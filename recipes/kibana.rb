@@ -8,7 +8,7 @@ cluster_slug = cluster_slug.gsub(/\n/, "")
 
 
 elasticsearch_server = data_bag_item("server_data_bag", "elasticsearch")
-if elasticsearch_server['haproxy'].has_key?("elasticsearch-#{cluster_slug}")
+if elasticsearch_server['haproxy'].has_key?("elasticsearch-#{}")
   es_proxy_port = elasticsearch_server['haproxy']["elasticsearch-hugo"]["proxy_port"]
 else
   es_proxy_port = 9200
